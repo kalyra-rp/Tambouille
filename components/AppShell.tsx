@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { MobileTopbar } from "./MobileTopbar";
-import { MOCK_CAULDRON } from "@/lib/mock";
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -27,7 +26,7 @@ export function AppShell({ children }: AppShellProps) {
     <div className="app-shell mx-auto my-[18px] grid w-[min(1440px,calc(100%-28px))] gap-[22px] grid-cols-1 min-[1180px]:grid-cols-[260px_1fr]">
       {/* Sidebar desktop : sticky */}
       <div className="hidden min-[1180px]:block sticky top-[18px] h-[calc(100vh-36px)]">
-        <Sidebar cauldronCount={MOCK_CAULDRON.length} />
+        <Sidebar />
       </div>
 
       {/* Drawer mobile + overlay */}
@@ -45,10 +44,7 @@ export function AppShell({ children }: AppShellProps) {
           mobileOpen ? "translate-x-0" : "-translate-x-[110%]"
         }`}
       >
-        <Sidebar
-          cauldronCount={MOCK_CAULDRON.length}
-          onNavigate={() => setMobileOpen(false)}
-        />
+        <Sidebar onNavigate={() => setMobileOpen(false)} />
       </div>
 
       <main className="grid gap-[22px]">

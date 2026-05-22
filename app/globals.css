@@ -170,6 +170,42 @@ h1, h2, h3, h4, h5, h6,
   filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.12));
 }
 
+/* ----- Confettis d'emojis (ajout au chaudron) ----- */
+.confetti-burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 5;
+}
+.confetti-piece {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 22px;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(var(--scale, 1));
+  animation: confettiBurst 1.4s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+  animation-delay: var(--delay, 0ms);
+  filter: drop-shadow(0 8px 16px rgba(155, 18, 63, 0.18));
+}
+@keyframes confettiBurst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(var(--scale, 1)) rotate(0deg);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform:
+      translate(calc(-50% + var(--tx)), calc(-50% + var(--ty)))
+      scale(calc(var(--scale, 1) * 1.4))
+      rotate(var(--rot, 0deg));
+  }
+}
+
 /* ----- Boutons pop (pill + shine sweep) ----- */
 .btn-pop {
   position: relative;

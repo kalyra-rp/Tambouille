@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 import { Sparkle } from "./Sparkle";
+import { useCauldron } from "@/lib/useCauldron";
 
 const NAV_ITEMS = [
   { href: "/", emoji: "🏠", label: "Accueil" },
@@ -16,12 +17,13 @@ const NAV_ITEMS = [
 ] as const;
 
 type SidebarProps = {
-  cauldronCount?: number;
   onNavigate?: () => void;
 };
 
-export function Sidebar({ cauldronCount = 0, onNavigate }: SidebarProps) {
+export function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname();
+  const { items } = useCauldron();
+  const cauldronCount = items.length;
 
   return (
     <aside

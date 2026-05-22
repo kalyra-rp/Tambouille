@@ -516,7 +516,13 @@ export default async function RecipePage({
           </div>
 
           <div className="flex flex-col gap-3 min-[1180px]:items-end">
-            <AddToCauldronButton />
+            <AddToCauldronButton
+              recipeId={recipe.id}
+              recipeTitle={recipe.title}
+              recipeEmoji={recipe.emoji}
+              recipeGradient={recipe.gradient ?? fallbackGradient}
+              defaultServings={baseServings}
+            />
             <span className="text-[12px] font-semibold text-cocoa">
               Tu pourras ajuster les portions juste après.
             </span>
