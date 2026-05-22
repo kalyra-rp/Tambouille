@@ -210,7 +210,7 @@ export default async function RecettesPage({
               gradient={r.gradient}
               badge={buildBadge(r.status)}
               meta={buildMeta(r)}
-              href={r.slug ? `/recettes/${r.slug}` : undefined}
+              href={`/recettes/${r.slug ?? r.id}`}
             />
           ))}
         </div>
