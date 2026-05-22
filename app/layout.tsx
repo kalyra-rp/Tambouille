@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Baloo_2, Inter } from "next/font/google";
+import { AppShell } from "@/components/AppShell";
 import "./globals.css";
 
 const baloo = Baloo_2({
@@ -32,8 +33,8 @@ export default function RootLayout({
       lang="fr"
       className={`${baloo.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-cream text-chocolate">
-        {children}
+      <body className="font-sans">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

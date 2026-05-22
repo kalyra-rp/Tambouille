@@ -7,23 +7,23 @@
 
 :root {
   /* --- Palette pop --- */
-  --cream:      #fff3df;   /* fond chaud clair */
+  --cream:      #fff3df;
   --cream-2:    #ffe8bf;
-  --vanilla:    #fff9ef;   /* fonds de cartes internes */
-  --cherry:     #e92655;   /* rouge cerise punchy */
+  --vanilla:    #fff9ef;
+  --cherry:     #e92655;
   --dark-rose:  #9b123f;
-  --wine-rose:  #5a0828;   /* fonds très sombres / overlays hero */
-  --raspberry:  #ff5c8a;   /* rose framboise */
-  --hot-pink:   #ff2f7d;   /* rose vif signature */
-  --orange:     #ff7a2f;   /* orange pop */
-  --butter:     #ffd447;   /* jaune beurre / doré */
-  --mint:       #69d8a6;   /* vert frais (validé / succès) */
+  --wine-rose:  #5a0828;
+  --raspberry:  #ff5c8a;
+  --hot-pink:   #ff2f7d;
+  --orange:     #ff7a2f;
+  --butter:     #ffd447;
+  --mint:       #69d8a6;
   --basil:      #15996b;
-  --chocolate:  #3d1f19;   /* texte principal */
-  --cocoa:      #6f3d30;   /* texte secondaire */
-  --gold:       #ffd447;   /* étincelles */
+  --chocolate:  #3d1f19;
+  --cocoa:      #6f3d30;
+  --gold:       #ffd447;
 
-  /* Surfaces & ombres réutilisables */
+  /* Surfaces & ombres */
   --card:           rgba(255, 255, 255, 0.82);
   --shadow:         0 24px 60px rgba(115, 42, 24, 0.18);
   --shadow-soft:    0 12px 30px rgba(115, 42, 24, 0.12);
@@ -31,15 +31,12 @@
   --radius-lg:      24px;
   --radius-md:      18px;
 
-  /* --- Sémantique --- */
   --background: var(--cream);
   --foreground: var(--chocolate);
 }
 
-/* Expose les tokens aux utilitaires Tailwind v4
-   → bg-cream, text-chocolate, bg-hot-pink, font-display, etc. */
+/* Expose les tokens à Tailwind v4 */
 @theme inline {
-  /* couleurs */
   --color-cream: var(--cream);
   --color-cream-2: var(--cream-2);
   --color-vanilla: var(--vanilla);
@@ -58,11 +55,9 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  /* typographie */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-baloo), "Baloo 2", ui-rounded, system-ui, sans-serif;
 
-  /* rayons & ombres exposés (rounded-xl-pop, shadow-pop…) */
   --radius-pop-md: var(--radius-md);
   --radius-pop-lg: var(--radius-lg);
   --radius-pop-xl: var(--radius-xl);
@@ -70,13 +65,58 @@
   --shadow-pop-soft: var(--shadow-soft);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
+/* =============================================================
+   Base
+   ============================================================= */
+
+html, body {
+  min-height: 100vh;
 }
 
-/* Titres : Baloo 2 — rond, joueur, bubble */
+body {
+  margin: 0;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(circle at 12% 8%,  rgba(255, 212, 71, 0.55), transparent 28%),
+    radial-gradient(circle at 90% 5%,  rgba(155,  18, 63, 0.38), transparent 30%),
+    radial-gradient(circle at 42% 0%,  rgba(255,  47, 125, 0.22), transparent 26%),
+    radial-gradient(circle at 75% 85%, rgba(105, 216, 166, 0.32), transparent 28%),
+    linear-gradient(135deg, #fff4df 0%, #ffe4bb 45%, #ffd7c8 100%);
+  overflow-x: hidden;
+}
+
+/* Pois sucrés qui dérivent + halos type lava-lamp en fond flouté */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.38;
+  background-image:
+    radial-gradient(circle, rgba(233, 38, 85, 0.14) 2px, transparent 2px),
+    radial-gradient(circle, rgba(255, 122, 47, 0.12) 2px, transparent 2px);
+  background-size: 42px 42px, 70px 70px;
+  background-position: 0 0, 20px 22px;
+  z-index: -1;
+  animation: sugarDrift 18s linear infinite;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.22;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(155, 18, 63, 0.45), transparent 10%),
+    radial-gradient(circle at 80% 20%, rgba(255, 47, 125, 0.38), transparent 12%),
+    radial-gradient(circle at 70% 80%, rgba(255, 122, 47, 0.35), transparent 12%);
+  filter: blur(50px);
+  animation: lavaLamp 12s ease-in-out infinite alternate;
+}
+
 h1, h2, h3, h4, h5, h6,
 .font-display {
   font-family: var(--font-display);
@@ -86,57 +126,144 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* =============================================================
-   Animations signature pop (voir §7)
-   Respecter prefers-reduced-motion : déjà géré en bas
+   Composants — classes utility pop
+   (utilisées par <Button>, <Chip>, <Sidebar>, <RecipeCard>…)
+   ============================================================= */
+
+/* ----- Sidebar nav items ----- */
+.nav-item {
+  cursor: pointer;
+  text-decoration: none;
+}
+.nav-item:hover {
+  background: linear-gradient(135deg, white, #ffe1ec);
+  color: var(--wine-rose);
+  box-shadow: 0 10px 24px rgba(115, 42, 24, 0.1);
+  transform: translateX(3px);
+}
+.nav-item--active {
+  background: linear-gradient(135deg, white, #ffe1ec);
+  color: var(--wine-rose);
+  box-shadow: 0 10px 24px rgba(115, 42, 24, 0.1);
+  transform: translateX(3px);
+}
+
+/* ----- Boutons pop (pill + shine sweep) ----- */
+.btn-pop {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-weight: 900;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15);
+}
+.btn-pop::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-18deg);
+  transition: 0.45s ease;
+  pointer-events: none;
+}
+.btn-pop:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+.btn-pop:hover::after {
+  left: 130%;
+}
+.btn-pop--primary {
+  background: linear-gradient(135deg, var(--butter), var(--orange), var(--hot-pink));
+  color: var(--wine-rose);
+}
+.btn-pop--secondary {
+  background: white;
+  color: var(--dark-rose);
+}
+.btn-pop--ghost {
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* ----- Chips ----- */
+.chip-pop {
+  display: inline-block;
+  padding: 9px 13px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 13px;
+  box-shadow: 0 8px 20px rgba(115, 42, 24, 0.08);
+  transition: 0.2s ease;
+}
+.chip-pop:hover {
+  transform: translateY(-3px) rotate(-1deg);
+  box-shadow: 0 12px 26px rgba(155, 18, 63, 0.16);
+}
+.chip-hot {
+  background: linear-gradient(135deg, var(--dark-rose), var(--hot-pink));
+}
+
+/* ----- Recipe card hover ----- */
+.recipe-card:hover {
+  transform: translateY(-7px) rotate(-0.6deg);
+  box-shadow: 0 22px 44px rgba(155, 18, 63, 0.2);
+}
+.add-to-cauldron:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--wine-rose), var(--dark-rose), var(--hot-pink)) !important;
+  color: white !important;
+  box-shadow: 0 12px 24px rgba(155, 18, 63, 0.2);
+}
+
+/* =============================================================
+   @keyframes (signatures animations)
    ============================================================= */
 
 @keyframes sugarDrift {
   from { background-position: 0 0, 20px 22px; }
   to   { background-position: 42px 42px, 90px 92px; }
 }
-
 @keyframes lavaLamp {
   0%   { transform: translate3d(-1%, -1%, 0) rotate(0deg) scale(1); }
   100% { transform: translate3d(2%, 1%, 0) rotate(4deg) scale(1.04); }
 }
-
 @keyframes gradientPulse {
   0%, 100% { background-position: 0% 50%; }
   50%      { background-position: 100% 50%; }
 }
-
 @keyframes logoWiggle {
   0%, 100% { transform: rotate(-5deg) scale(1); }
   50%      { transform: rotate(4deg) scale(1.06); }
 }
-
 @keyframes floaty {
   0%, 100% { transform: translateY(0) rotate(-5deg); }
   50%      { transform: translateY(-14px) rotate(7deg) scale(1.06); }
 }
-
 @keyframes cardFloat {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-7px); }
 }
-
 @keyframes sparkleDance {
   0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.55; }
   50%      { transform: translateY(-12px) rotate(18deg) scale(1.25); opacity: 1; }
 }
-
 @keyframes badgePulse {
   0%, 100% { transform: scale(1);     box-shadow: 0 0 0 rgba(155, 18, 63, 0); }
   50%      { transform: scale(1.045); box-shadow: 0 8px 18px rgba(155, 18, 63, 0.16); }
 }
-
 @keyframes iconBob {
   0%, 100% { transform: translateY(0) rotate(-4deg); }
   50%      { transform: translateY(-8px) rotate(6deg); }
 }
 
-/* Accessibilité : on coupe tout pour les utilisateurs
-   qui préfèrent moins de mouvement */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation: none !important;
