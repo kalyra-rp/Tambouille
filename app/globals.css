@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+/* =============================================================
+   🍲 TAMBOUILLE — Design tokens (direction POP / FUN / SEXY)
+   Référence : PROJECT_SPEC.md §7 + mockup HTML pop_sexy
+   ============================================================= */
+
+:root {
+  /* --- Palette pop --- */
+  --cream:      #fff3df;   /* fond chaud clair */
+  --cream-2:    #ffe8bf;
+  --vanilla:    #fff9ef;   /* fonds de cartes internes */
+  --cherry:     #e92655;   /* rouge cerise punchy */
+  --dark-rose:  #9b123f;
+  --wine-rose:  #5a0828;   /* fonds très sombres / overlays hero */
+  --raspberry:  #ff5c8a;   /* rose framboise */
+  --hot-pink:   #ff2f7d;   /* rose vif signature */
+  --orange:     #ff7a2f;   /* orange pop */
+  --butter:     #ffd447;   /* jaune beurre / doré */
+  --mint:       #69d8a6;   /* vert frais (validé / succès) */
+  --basil:      #15996b;
+  --chocolate:  #3d1f19;   /* texte principal */
+  --cocoa:      #6f3d30;   /* texte secondaire */
+  --gold:       #ffd447;   /* étincelles */
+
+  /* Surfaces & ombres réutilisables */
+  --card:           rgba(255, 255, 255, 0.82);
+  --shadow:         0 24px 60px rgba(115, 42, 24, 0.18);
+  --shadow-soft:    0 12px 30px rgba(115, 42, 24, 0.12);
+  --radius-xl:      34px;
+  --radius-lg:      24px;
+  --radius-md:      18px;
+
+  /* --- Sémantique --- */
+  --background: var(--cream);
+  --foreground: var(--chocolate);
+}
+
+/* Expose les tokens aux utilitaires Tailwind v4
+   → bg-cream, text-chocolate, bg-hot-pink, font-display, etc. */
+@theme inline {
+  /* couleurs */
+  --color-cream: var(--cream);
+  --color-cream-2: var(--cream-2);
+  --color-vanilla: var(--vanilla);
+  --color-cherry: var(--cherry);
+  --color-dark-rose: var(--dark-rose);
+  --color-wine-rose: var(--wine-rose);
+  --color-raspberry: var(--raspberry);
+  --color-hot-pink: var(--hot-pink);
+  --color-orange: var(--orange);
+  --color-butter: var(--butter);
+  --color-mint: var(--mint);
+  --color-basil: var(--basil);
+  --color-chocolate: var(--chocolate);
+  --color-cocoa: var(--cocoa);
+  --color-gold: var(--gold);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* typographie */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-baloo), "Baloo 2", ui-rounded, system-ui, sans-serif;
+
+  /* rayons & ombres exposés (rounded-xl-pop, shadow-pop…) */
+  --radius-pop-md: var(--radius-md);
+  --radius-pop-lg: var(--radius-lg);
+  --radius-pop-xl: var(--radius-xl);
+  --shadow-pop: var(--shadow);
+  --shadow-pop-soft: var(--shadow-soft);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Titres : Baloo 2 — rond, joueur, bubble */
+h1, h2, h3, h4, h5, h6,
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+/* =============================================================
+   Animations signature pop (voir §7)
+   Respecter prefers-reduced-motion : déjà géré en bas
+   ============================================================= */
+
+@keyframes sugarDrift {
+  from { background-position: 0 0, 20px 22px; }
+  to   { background-position: 42px 42px, 90px 92px; }
+}
+
+@keyframes lavaLamp {
+  0%   { transform: translate3d(-1%, -1%, 0) rotate(0deg) scale(1); }
+  100% { transform: translate3d(2%, 1%, 0) rotate(4deg) scale(1.04); }
+}
+
+@keyframes gradientPulse {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+@keyframes logoWiggle {
+  0%, 100% { transform: rotate(-5deg) scale(1); }
+  50%      { transform: rotate(4deg) scale(1.06); }
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%      { transform: translateY(-14px) rotate(7deg) scale(1.06); }
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
+}
+
+@keyframes sparkleDance {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.55; }
+  50%      { transform: translateY(-12px) rotate(18deg) scale(1.25); opacity: 1; }
+}
+
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1);     box-shadow: 0 0 0 rgba(155, 18, 63, 0); }
+  50%      { transform: scale(1.045); box-shadow: 0 8px 18px rgba(155, 18, 63, 0.16); }
+}
+
+@keyframes iconBob {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50%      { transform: translateY(-8px) rotate(6deg); }
+}
+
+/* Accessibilité : on coupe tout pour les utilisateurs
+   qui préfèrent moins de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
