@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useCauldron } from "@/lib/useCauldron";
 import { Card } from "@/components/Card";
 import { Sparkle } from "@/components/Sparkle";
@@ -9,7 +9,6 @@ import { CauldronItemCard } from "@/components/CauldronItemCard";
 
 export default function ChaudronPage() {
   const { items, updateServings, removeItem, clearCauldron } = useCauldron();
-  const [magicPending, setMagicPending] = useState(false);
 
   const count = items.length;
   const totalServings = items.reduce((sum, i) => sum + i.servings, 0);
@@ -110,18 +109,12 @@ export default function ChaudronPage() {
             >
               Vider le chaudron
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMagicPending(true);
-                window.setTimeout(() => setMagicPending(false), 1800);
-              }}
-              className="btn-pop btn-pop--primary"
+            <Link
+              href="/courses"
+              className="btn-pop btn-pop--primary no-underline"
             >
-              {magicPending
-                ? "✨ Liste magique bientôt là !"
-                : "Transformer en liste de courses ✨"}
-            </button>
+              Transformer en liste de courses ✨
+            </Link>
           </div>
         </div>
       </Card>
@@ -151,18 +144,12 @@ export default function ChaudronPage() {
               faire un tour.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              setMagicPending(true);
-              window.setTimeout(() => setMagicPending(false), 1800);
-            }}
-            className="btn-pop btn-pop--primary"
+          <Link
+            href="/courses"
+            className="btn-pop btn-pop--primary no-underline"
           >
-            {magicPending
-              ? "✨ Liste magique bientôt là !"
-              : "Générer la liste ✨"}
-          </button>
+            Générer la liste ✨
+          </Link>
         </div>
       </Card>
     </div>

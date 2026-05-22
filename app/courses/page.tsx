@@ -5,103 +5,21 @@ import { useEffect, useMemo, useState } from "react";
 import { useCauldron } from "@/lib/useCauldron";
 import { supabase } from "@/lib/supabase";
 import { formatQuantity } from "@/lib/units";
+import {
+  AISLE_EMOJIS,
+  AISLE_LABELS,
+  RECIPE_SELECT_FOR_SHOPPING,
+  buildShoppingList,
+  type RecipeWithIngredients,
+} from "@/lib/shopping";
 import { Card } from "@/components/Card";
 import { Sparkle } from "@/components/Sparkle";
-
-// =============================================================
-// Rayons (ordre + emojis + libellés)
-// =============================================================
-
-const AISLE_ORDER = [
-  "F&L",
-  "Frais",
-  "Boucherie",
-  "Épicerie",
-  "Caves",
-  "Surgelés",
-  "Boulangerie",
-  "Hygiène/Maison",
-  "Autre",
-] as const;
-
-type Aisle = (typeof AISLE_ORDER)[number];
-
-const AISLE_EMOJIS: Record<Aisle, string> = {
-  "F&L": "🥬",
-  Frais: "🧀",
-  Boucherie: "🥩",
-  Épicerie: "🥫",
-  Caves: "🍷",
-  Surgelés: "🧊",
-  Boulangerie: "🥖",
-  "Hygiène/Maison": "🧼",
-  Autre: "📦",
-};
-
-const AISLE_LABELS: Record<Aisle, string> = {
-  "F&L": "Fruits & Légumes",
-  Frais: "Frais",
-  Boucherie: "Boucherie",
-  Épicerie: "Épicerie",
-  Caves: "Caves & Spiritueux",
-  Surgelés: "Surgelés",
-  Boulangerie: "Boulangerie",
-  "Hygiène/Maison": "Hygiène & Maison",
-  Autre: "Autre",
-};
-
-function normalizeAisle(raw: string | null | undefined): Aisle {
-  if (!raw) return "Autre";
-  const trimmed = raw.trim();
-  if ((AISLE_ORDER as readonly string[]).includes(trimmed)) {
-    return trimmed as Aisle;
-  }
-  const lower = trimmed.toLowerCase();
-  const found = (AISLE_ORDER as readonly string[]).find(
-    (a) => a.toLowerCase() === lower,
-  );
-  return (found as Aisle | undefined) ?? "Autre";
-}
-
-// =============================================================
-// Types miroir Supabase
-// =============================================================
-
-type RecipeRow = {
-  id: string;
-  title: string;
-  servings: number | null;
-  recipe_ingredients: Array<{
-    quantity: number | null;
-    unit: string | null;
-    sort_order: number | null;
-    ingredient: {
-      name: string;
-      aisle: string | null;
-      default_unit: string | null;
-    } | null;
-  }> | null;
-};
-
-type MergedItem = {
-  key: string;
-  name: string;
-  unit: string;
-  totalQuantity: number | null;
-  aisle: Aisle;
-  sourceCount: number;
-  sourceTitles: string[];
-};
-
-// =============================================================
-// Page
-// =============================================================
 
 export default function CoursesPage() {
   const { items } = useCauldron();
   const [fetched, setFetched] = useState<{
     key: string;
-    recipes: RecipeRow[];
+    recipes: RecipeWithIngredients[];
   } | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [checked, setChecked] = useState<Set<string>>(new Set());
@@ -128,15 +46,7 @@ export default function CoursesPage() {
     (async () => {
       const { data, error } = await supabase
         .from("recipes")
-        .select(
-          `
-          id, title, servings,
-          recipe_ingredients(
-            quantity, unit, sort_order,
-            ingredient:ingredients(name, aisle, default_unit)
-          )
-        `,
-        )
+        .select(RECIPE_SELECT_FOR_SHOPPING)
         .in("id", ids);
 
       if (cancelled) return;
@@ -147,7 +57,7 @@ export default function CoursesPage() {
       setErrorMsg(null);
       setFetched({
         key: recipeIdsKey,
-        recipes: (data ?? []) as unknown as RecipeRow[],
+        recipes: (data ?? []) as unknown as RecipeWithIngredients[],
       });
     })();
 
@@ -166,70 +76,13 @@ export default function CoursesPage() {
           ? "loading"
           : "success";
 
-  // Fusion + application du ratio
-  const merged: MergedItem[] = useMemo(() => {
-    if (status !== "success" || !fetched) return [];
-    const map = new Map<string, MergedItem>();
-    const itemByRecipeId = new Map(items.map((i) => [i.recipeId, i]));
-
-    for (const recipe of fetched.recipes) {
-      const cauldronItem = itemByRecipeId.get(recipe.id);
-      if (!cauldronItem) continue;
-      const baseServings =
-        recipe.servings && recipe.servings > 0 ? recipe.servings : 4;
-      const ratio = cauldronItem.servings / baseServings;
-
-      for (const ri of recipe.recipe_ingredients ?? []) {
-        const ing = ri.ingredient;
-        if (!ing) continue;
-        const name = ing.name.trim();
-        const unit = (ri.unit ?? ing.default_unit ?? "").trim();
-        const key = `${name.toLowerCase()}|${unit.toLowerCase()}`;
-        const adjustedQty = ri.quantity != null ? ri.quantity * ratio : null;
-        const aisle = normalizeAisle(ing.aisle);
-
-        const existing = map.get(key);
-        if (existing) {
-          if (adjustedQty != null) {
-            existing.totalQuantity =
-              (existing.totalQuantity ?? 0) + adjustedQty;
-          }
-          if (!existing.sourceTitles.includes(recipe.title)) {
-            existing.sourceTitles.push(recipe.title);
-            existing.sourceCount += 1;
-          }
-        } else {
-          map.set(key, {
-            key,
-            name,
-            unit,
-            totalQuantity: adjustedQty,
-            aisle,
-            sourceCount: 1,
-            sourceTitles: [recipe.title],
-          });
-        }
-      }
+  // Fusion + groupage (lib/shopping)
+  const { merged, groups } = useMemo(() => {
+    if (status !== "success" || !fetched) {
+      return { merged: [], groups: [] };
     }
-    return [...map.values()];
+    return buildShoppingList(items, fetched.recipes);
   }, [fetched, items, status]);
-
-  // Groupement par rayon (ordre fixe)
-  const groups = useMemo(() => {
-    const byAisle = new Map<Aisle, MergedItem[]>();
-    for (const item of merged) {
-      const arr = byAisle.get(item.aisle);
-      if (arr) arr.push(item);
-      else byAisle.set(item.aisle, [item]);
-    }
-    for (const arr of byAisle.values()) {
-      arr.sort((a, b) => a.name.localeCompare(b.name, "fr"));
-    }
-    return AISLE_ORDER.filter((a) => byAisle.has(a)).map((a) => ({
-      aisle: a,
-      items: byAisle.get(a) as MergedItem[],
-    }));
-  }, [merged]);
 
   // Comptes & progression
   const totalCount = merged.length;
@@ -326,10 +179,10 @@ export default function CoursesPage() {
           Retourne mijoter quelque chose 🍲
         </p>
         <Link
-          href="/chaudron"
+          href="/recettes"
           className="btn-pop btn-pop--primary mt-6 inline-block no-underline"
         >
-          🍲 Aller au chaudron
+          📚 Explorer les recettes
         </Link>
       </Card>
     );
@@ -382,7 +235,6 @@ export default function CoursesPage() {
   // -----------------------------------------------------------
 
   if (totalCount === 0) {
-    // Cas rare : recettes dans le chaudron, mais aucun ingrédient renseigné
     return (
       <Card as="section" className="text-center">
         <h1 className="mb-3 font-display text-4xl text-chocolate">
