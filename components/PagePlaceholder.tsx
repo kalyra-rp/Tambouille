@@ -20,6 +20,14 @@ export function PagePlaceholder({
       <Sparkle className="right-[14%] top-[30%]" glyph="✧" delay={-1.2} color="#ff9fc0" />
       <Sparkle className="left-[40%] bottom-[20%]" size={20} delay={-2} />
 
+      {/* Gros emoji décoratif qui flotte doucement */}
+      <span
+        aria-hidden
+        className="placeholder-emoji pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 select-none text-[120px] opacity-70 md:right-10 md:text-[160px]"
+      >
+        {emoji}
+      </span>
+
       <div className="relative max-w-[640px]">
         <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/70 px-[13px] py-[8px] text-[13px] font-black text-dark-rose">
           {emoji} Tambouille
