@@ -60,6 +60,15 @@ export function Sidebar({ onNavigate }: SidebarProps) {
             );
           })}
         </nav>
+
+        {/* Raccourci création */}
+        <Link
+          href="/recettes/nouvelle"
+          onClick={onNavigate}
+          className="sidebar-cta mt-4"
+        >
+          + Nouvelle recette
+        </Link>
       </div>
 
       <div className="relative">
