@@ -332,6 +332,12 @@ h1, h2, h3, h4, h5, h6,
   transform: translateY(-7px) rotate(-0.6deg);
   box-shadow: 0 22px 44px rgba(155, 18, 63, 0.2);
 }
+
+/* ----- Collection card (accueil) ----- */
+.collection-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(155, 18, 63, 0.16);
+}
 .add-to-cauldron:hover {
   transform: translateY(-2px);
   background: linear-gradient(135deg, var(--wine-rose), var(--dark-rose), var(--hot-pink)) !important;
