@@ -16,7 +16,7 @@ export function Sparkle({
   return (
     <span
       aria-hidden
-      className={`pointer-events-none absolute z-[1] select-none ${className}`}
+      className={`sparkle pointer-events-none absolute z-[1] select-none ${className}`}
       style={{
         color,
         fontSize: size,

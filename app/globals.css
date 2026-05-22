@@ -170,6 +170,64 @@ h1, h2, h3, h4, h5, h6,
   filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.12));
 }
 
+/* ----- Liste de courses : items cochables ----- */
+.shopping-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  border: 0;
+  border-radius: 18px;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  background: var(--vanilla);
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+.shopping-item:hover {
+  transform: translateX(4px);
+  background: #ffe6ef;
+}
+.shopping-item--checked {
+  opacity: 0.55;
+}
+.shopping-item--checked .shopping-item__label {
+  text-decoration: line-through;
+}
+
+.shopping-check {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ffd0dc;
+  border-radius: 8px;
+  background: white;
+  color: white;
+  font-size: 14px;
+  font-weight: 900;
+  transition: 0.18s ease;
+}
+.shopping-check[data-checked] {
+  background: linear-gradient(135deg, var(--butter), var(--orange), var(--hot-pink));
+  border-color: transparent;
+  box-shadow: 0 6px 14px rgba(233, 38, 85, 0.25);
+}
+
+.shopping-badge {
+  flex: 0 0 auto;
+  padding: 0.4rem 0.6rem;
+  border-radius: 999px;
+  background: white;
+  color: var(--dark-rose);
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 6px 14px rgba(115, 42, 24, 0.08);
+}
+
 /* ----- Confettis d'emojis (ajout au chaudron) ----- */
 .confetti-burst {
   position: absolute;
@@ -326,5 +384,39 @@ h1, h2, h3, h4, h5, h6,
   *, *::before, *::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* =============================================================
+   Print : ne montrer que la liste, masquer chrome et décorations
+   ============================================================= */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  body::before,
+  body::after {
+    display: none !important;
+  }
+  .app-shell {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    grid-template-columns: 1fr !important;
+  }
+  aside,
+  .mobile-topbar,
+  .confetti-burst,
+  .placeholder-emoji,
+  .sparkle {
+    display: none !important;
+  }
+  .shopping-item {
+    background: transparent !important;
+    transform: none !important;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: black !important;
   }
 }

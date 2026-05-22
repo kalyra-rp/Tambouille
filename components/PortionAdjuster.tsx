@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { formatQuantity } from "@/lib/units";
 
 export type AdjusterIngredient = {
   id: string;
@@ -16,51 +17,6 @@ type Props = {
   baseServings: number;
   ingredients: AdjusterIngredient[];
 };
-
-/** Unités exprimant un dénombrement → on arrondit à l'entier le plus proche (min 1). */
-const PIECE_UNITS = new Set([
-  "pièce",
-  "pièces",
-  "pcs",
-  "unité",
-  "unités",
-  "œuf",
-  "œufs",
-  "oeuf",
-  "oeufs",
-  "part",
-  "parts",
-  "personne",
-  "personnes",
-  "botte",
-  "bottes",
-  "gousse",
-  "gousses",
-  "tranche",
-  "tranches",
-  "boîte",
-  "boîtes",
-  "boite",
-  "boites",
-  "bouquet",
-  "bouquets",
-]);
-
-function isPieceUnit(unit: string | null | undefined): boolean {
-  if (!unit) return false;
-  return PIECE_UNITS.has(unit.trim().toLowerCase());
-}
-
-/** Quantité ajustée, arrondie intelligemment. */
-function formatQuantity(qty: number | null, unit: string | null): string {
-  if (qty == null || Number.isNaN(qty)) return "";
-  if (isPieceUnit(unit)) {
-    return String(Math.max(1, Math.round(qty)));
-  }
-  // Sinon : 2 décimales max, sans zéros inutiles (1.50 → "1.5", 2.00 → "2")
-  const rounded = Math.round(qty * 100) / 100;
-  return String(rounded);
-}
 
 export function PortionAdjuster({ baseServings, ingredients }: Props) {
   const safeBase = baseServings > 0 ? baseServings : 1;
